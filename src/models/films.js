@@ -2,7 +2,7 @@ const RequestHelper = require('../helpers/request_helper.js');
 const PubSub = require('../helpers/pub_sub.js');
 
 
-const Films = function () {
+const Films = function (director) {
   this.films = [];
   this.director = director;
 };
@@ -13,67 +13,45 @@ Films.prototype.getData = function () {
     PubSub.publish('Films:data-ready', data);
     // console.log(data); //-> is full list of films
   })
+  requestHelper.get((data) => {
+    this.filmList = data;
+    this.getDirectors(this.filmList);
+  })
 };
 
-module.exports = Films;
-
-
-
-const PubSub = require('../helpers/pub_sub');
-const Request = require('../helpers/request_helper');
-
-const Munros = function(url, region){
-
-  this.url = url;
-  this.munroList = [];
-  this.region = region;
-
-};
-
-Munros.prototype.bindEvents = function(){
+Films.prototype.bindEvents = function(){
 
   this.getData();
-  PubSub.subscribe('RegionSelect:region-selected', (event) => {
-    this.region = event.detail;
-    this.getByRegion();
+  PubSub.subscribe('DirectorSelect:director-selected', (event) => {
+    this.director = event.detail;
+    this.getByDirector();
   })
 
 };
 
-Munros.prototype.getData = function(){
+Films.prototype.getByDirector = function(){
 
-  const request = new Request(this.url);
-  request.get((data) => {
-    this.munroList = data;
-    this.getRegions(this.munroList);
-  });
+  const filmsByDirector = this.filmList.filter((film) => {
 
-};
-
-Munros.prototype.getByRegion = function(){
-
-  const munrosInRegion = this.munroList.filter((munro) => {
-
-    if (this.region === 'All'){
-      return munro.region
+    if (this.director === 'All'){
+      return film.director
     } else {
-      return munro.region === this.region;
+      return film.director === this.director;
     }
 
   })
-  PubSub.publish('Munros:data-ready', munrosInRegion);
-
-}
-
-
-Munros.prototype.getRegions = function(munroList){
-
-  const regionList = this.munroList.map(munro => munro.region)
-  .filter((region, index, regions) => {
-    return regions.indexOf(region) === index
-  });
-
-  PubSub.publish('Munros:region-data-ready', regionList)
+  PubSub.publish('Films:data-ready', filmsByDirector);
 };
 
-module.exports = Munros;
+Films.prototype.getDirectors = function(filmList){
+
+  const directorList = this.filmList.map(film => film.director)
+  .filter((director, index, directors) => {
+    return directors.indexOf(director) === index
+  });
+
+  PubSub.publish('Films:director-data-ready', directorList)
+  // console.log(directorList); // --> correct list of directors
+};
+
+module.exports = Films;

@@ -1,39 +1,38 @@
 const PubSub = require('../helpers/pub_sub');
 
-const DirectorSelect = function(element, selectedDirector){
-  this.element = element;
+const DirectorSelect = function(selectElement, selectedDirector){
+  this.selectElement = element;
   this.directors = []
   this.selectedDirector = selectedDirector;
 };
 
-RegionSelect.prototype.bindEvents = function(){
-  PubSub.subscribe('Munros:region-data-ready', (event) => {
-    this.regions = event.detail;
+DirectorSelect.prototype.bindEvents = function(){
+  PubSub.subscribe('Films:director-data-ready', (event) => {
+    this.directors = event.detail;
     this.render();
   })
 };
 
-RegionSelect.prototype.regionSelected = function(){
-  PubSub.publish('RegionSelect:region-selected', this.selectedRegion);
+DirectorSelect.prototype.directorSelected = function(){
+  PubSub.publish('DirectorSelect:director-selected', this.selectedDirector);
 };
 
-RegionSelect.prototype.render = function(){
+DirectorSelect.prototype.render = function(){
 
-  this.regions.forEach((region) => {
-    const regionOption = document.createElement('option');
-    regionOption.innerHTML = region;
-    this.element.appendChild(regionOption);
+  this.directors.forEach((director) => {
+    const directorOption = document.createElement('option');
+    directorOption.innerHTML = director;
+    this.element.appendChild(directorOption);
   });
 
   this.element.addEventListener('change', (event) => {
-    const selectedRegion = event.target.value;
-    this.selectedRegion = selectedRegion;
-    this.regionSelected();
+    const selectedDirector = event.target.value;
+    this.selectedDirector = selectedDirector;
+    this.directorSelected();
   })
 
-  this.regionSelected();
+  this.directorSelected();
 
 };
 
-
-module.exports = RegionSelect;
+module.exports = DirectorSelect;
