@@ -14,8 +14,8 @@ Films.prototype.getData = function () {
     // console.log(data); //-> is full list of films
   })
   requestHelper.get((data) => {
-    this.filmList = data;
-    this.getDirectors(this.filmList);
+    this.films = data;
+    this.getDirectors(this.films);
   })
 };
 
@@ -31,7 +31,7 @@ Films.prototype.bindEvents = function(){
 
 Films.prototype.getByDirector = function(){
 
-  const filmsByDirector = this.filmList.filter((film) => {
+  const filmsByDirector = this.films.filter((film) => {
 
     if (this.director === 'All'){
       return film.director
@@ -41,11 +41,12 @@ Films.prototype.getByDirector = function(){
 
   })
   PubSub.publish('Films:data-ready', filmsByDirector);
+  console.log(filmsByDirector); // gives correct list of director's films after click
 };
 
 Films.prototype.getDirectors = function(filmList){
 
-  const directorList = this.filmList.map(film => film.director)
+  const directorList = this.films.map(film => film.director)
   .filter((director, index, directors) => {
     return directors.indexOf(director) === index
   });
