@@ -20,5 +20,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // two issues still i think:
 // list does not state unqique list of directors but all of them
-// after click, the correct films get rendered to the screen but added below instead of refreshing to only show those films
+// after click, the correct films get rendered to the screen. Only "All directors" to show everything not working yet. Overall the code is a bit messy since I wasnt very sure how to go about it
 // would like to go over this during homework review

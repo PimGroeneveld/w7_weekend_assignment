@@ -8,6 +8,7 @@ const FilmListView = function(container){
 FilmListView.prototype.bindEvents = function(){
   PubSub.subscribe("Films:data-ready", (event) => {
     this.films = event.detail;
+    this.clearFilms();
     this.render();
     // console.log(event.detail); // -> showing all films
   });
@@ -20,5 +21,9 @@ FilmListView.prototype.render = function(){
     // console.log(film);  // --> films split into own objects
   })
 }
+
+FilmListView.prototype.clearFilms = function () {
+  this.container.innerHTML = '';
+};
 
 module.exports = FilmListView;
